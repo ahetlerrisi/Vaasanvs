@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAASAN | Authentic Home Kitchen</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Yatra+One&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --mustard-orange: #F39C12; /* Brand Background */
+            --earthy-brown: #4A2511;   /* Brand Text */
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --transition-speed: 0.6s;
+        }
+
+        /* --- GLOBAL RESETS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--mustard-orange);
+            color: var(--earthy-brown);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Yatra One', system-ui;
+            font-weight: 400;
+        }
+
+        /* --- BACKGROUND STEAM ANIMATION --- */
+        .steam-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .steam {
+            position: absolute;
+            bottom: -10%;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: rise infinite ease-in;
+            opacity: 0;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+            30% { opacity: 0.4; }
+            100% { transform: translateY(-120vh) scale(3) rotate(360deg); opacity: 0; }
+        }
+
+        /* Generate multiple steam particles with different delays via JS or CSS */
+        .steam:nth-child(1) { left: 10%; width: 120px; height: 120px; animation-duration: 8s; }
+        .steam:nth-child(2) { left: 30%; width: 80px; height: 80px; animation-duration: 10s; animation-delay: 2s; }
+        .steam:nth-child(3) { left: 60%; width: 150px; height: 150px; animation-duration: 12s; animation-delay: 4s; }
+        .steam:nth-child(4) { left: 80%; width: 90px; height: 90px; animation-duration: 9s; animation-delay: 1s; }
+
+        /* --- LAYOUT STRUCTURE (z-index ensures it sits above steam) --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- REVEAL ON SCROLL CLASSES --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all var(--transition-speed) ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HEADER SECTION --- */
+        header {
+            text-align: center;
+            padding: 4rem 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+        }
+
+        .logo-placeholder {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            color: var(--earthy-brown);
+        }
+
+        .tagline-primary {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline-secondary {
+            font-size: 1.1rem;
+            font-weight: 500;
+            max-width: 600px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        /* --- INFINITE SCROLLING MARQUEE (VISUALS) --- */
+        .carousel-section {
+            padding: 2rem 0;
+            overflow: hidden;
+            background: rgba(74, 37, 17, 0.05); /* Subtle dark band */
+        }
+
+        .marquee-track {
+            display: flex;
+            width: calc(250px * 10); /* Adjust based on image count * width */
+            animation: scroll-left 25s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-item {
+            width: 250px;
+            height: 250px;
+            margin: 0 10px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(74, 37, 17, 0.2);
+            flex-shrink: 0;
+        }
+
+        .marquee-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .marquee-item:hover img {
+            transform: scale(1.05);
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-250px * 5 - 100px)); /* Half of the total width */ }
+        }
+
+        /* --- ACTION AREA (WHATSAPP PRE-ORDER) --- */
+        .action-section {
+            padding: 4rem 1.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .action-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(74, 37, 17, 0.15);
+        }
+
+        .action-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-card p {
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--earthy-brown);
+            color: var(--mustard-orange);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(74, 37, 17, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(74, 37, 17, 0.4);
+        }
+
+        .whatsapp-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: currentColor;
+        }
+
+        /* --- TESTIMONIALS (SOCIAL PROOF) --- */
+        .testimonials-section {
+            padding: 4rem 1.5rem 6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .testimonials-header {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .testimonial-slider {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            min-height: 200px;
+        }
+
+        /* Editable Testimonial Card Design */
+        .testimonial-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(74, 37, 17, 0.1);
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            pointer-events: none;
+        }
+
+        .testimonial-card.active {
+            opacity: 1;
+            transform: scale(1);
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .quote-icon {
+            font-family: 'Yatra One', cursive;
+            font-size: 4rem;
+            color: var(--earthy-brown);
+            opacity: 0.3;
+            line-height: 0;
+            position: relative;
+            top: 20px;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: right;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(74, 37, 17, 0.2);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (min-width: 768px) {
+            .logo-placeholder { font-size: 4.5rem; }
+            .tagline-primary { font-size: 2.5rem; }
+            .tagline-secondary { font-size: 1.3rem; }
+            .btn-whatsapp { font-size: 1.3rem; padding: 1.2rem 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Steam Background Animation -->
+    <div class="steam-container">
+        <div class="steam"></div>
+        <div class="steam"></div>
+        <div class="steam"></div>
+        <div class="steam"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+
+        <!-- HEADER SECTION -->
+        <header class="reveal">
+            <h1 class="logo-placeholder brand-font">VAASAN</h1>
+            <h2 class="tagline-primary brand-font">Ghar Jaisa Khaana...</h2>
+            <p class="tagline-secondary">From our kitchen to your table - Taste the warmth of tradition.</p>
+        </header>
+
+        <!-- VISUALS: Infinite Carousel -->
+        <section class="carousel-section reveal">
+            <div class="marquee-track">
+                <!-- Group 1 -->
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=500&q=80" alt="Indian Thali"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=500&q=80" alt="Authentic Curry"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80" alt="Samosa Plate"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=500&q=80" alt="Chicken Tikka"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80" alt="Biryani"></div>
+                
+                <!-- Group 2 (Duplicate for seamless infinite scroll) -->
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=500&q=80" alt="Indian Thali"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=500&q=80" alt="Authentic Curry"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80" alt="Samosa Plate"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=500&q=80" alt="Chicken Tikka"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80" alt="Biryani"></div>
+            </div>
+        </section>
+
+        <!-- ACTION AREA -->
+        <section class="action-section reveal">
+            <div class="action-card">
+                <h2 class="brand-font">Craving Home Food?</h2>
+                <p>We prepare fresh, authentic meals in small batches. Tap below to reserve your plate today.</p>
+                
+                <!-- WHATSAPP BUTTON (Directly redirects to WhatsApp with Pre-filled message) -->
+                <a href="https://wa.me/9105104460455?text=Hi%20VAASAN,%20I%20would%20like%20to%20pre-order%20some%20food!" target="_blank" class="btn-whatsapp">
+                    <svg class="whatsapp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                    </svg>
+                    Pre-Order Now
+                </a>
+            </div>
+        </section>
+
+        <!-- SOCIAL PROOF: Customer Feedback Section -->
+        <section class="testimonials-section reveal">
+            <h2 class="testimonials-header brand-font">Loved by our patrons</h2>
+            
+            <div class="testimonial-slider">
+                
+                <!-- ========================================== -->
+                <!-- YOU CAN EDIT / ADD / REMOVE REVIEWS BELOW  -->
+                <!-- ========================================== -->
+
+                <!-- Review 1 -->
+                <div class="testimonial-card active">
+                    <span class="quote-icon">“</span>
+                    <p class="testimonial-text">Absolutely incredible. It instantly reminded me of my mother's cooking. The spices are perfectly balanced and you can taste the authenticity in every bite!</p>
+                    <p class="testimonial-author">- Rahul S.</p>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="testimonial-card">
+                    <span class="quote-icon">“</span>
+                    <p class="testimonial-text">VAASAN is a lifesaver. Being far from home, finding food that actually feels like 'Ghar Jaisa Khaana' is rare. Their thalis are my weekly staple now.</p>
+                    <p class="testimonial-author">- Priya M.</p>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="testimonial-card">
+                    <span class="quote-icon">“</span>
+                    <p class="testimonial-text">The ordering process via WhatsApp is so simple, and the packaging kept the food hot and fresh. Highly recommend the Paneer Special!</p>
+                    <p class="testimonial-author">- Amit T.</p>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- END OF REVIEWS                             -->
+                <!-- ========================================== -->
+
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>&copy; 2026 VAASAN. Authentic Home Kitchen.</p>
+        </footer>
+
+    </div>
+
+    <!-- --- JAVASCRIPT --- -->
+    <script>
+        // 1. Reveal Elements on Scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Reveal only once
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // 2. Auto-sliding Testimonials
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        let currentTestimonial = 0;
+
+        function showNextTestimonial() {
+            // Remove active class from current
+            testimonials[currentTestimonial].classList.remove('active');
+            
+            // Move to next (loop back to 0 if at the end)
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            
+            // Add active class to new
+            testimonials[currentTestimonial].classList.add('active');
+        }
+
+        // Change testimonial every 5 seconds
+        if (testimonials.length > 1) {
+            setInterval(showNextTestimonial, 5000);
+        }
+    </script>
+</body>
+</html>
